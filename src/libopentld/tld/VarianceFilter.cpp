@@ -86,7 +86,7 @@ bool VarianceFilter::filter(int i)
 {
     if(!enabled) return true;
 
-    float bboxvar = calcVariance(windowOffsets + TLD_WINDOW_OFFSET_SIZE * i);
+    float bboxvar = calcVariance(windowOffsets + TLD_WINDOW_OFFSET_SIZE * i); // variance
 
     detectionResult->variances[i] = bboxvar;
 

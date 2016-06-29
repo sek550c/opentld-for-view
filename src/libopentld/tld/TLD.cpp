@@ -184,21 +184,21 @@ void TLD::fuseHypotheses()
 
     float confDetector = 0;
 
-    if(numClusters == 1)
+    if(numClusters == 1) //only one detection
     {
-        confDetector = nnClassifier->classifyBB(currImg, detectorBB);
+        confDetector = nnClassifier->classifyBB(currImg, detectorBB); //confidence of this detection
     }
 
     if(trackerBB != NULL)
     {
-        float confTracker = nnClassifier->classifyBB(currImg, trackerBB);
+        float confTracker = nnClassifier->classifyBB(currImg, trackerBB); //confidence of track 
         if(currBB)
         {
             delete currBB;
             currBB = NULL;
         }
 
-        if(numClusters == 1 && confDetector > confTracker && tldOverlapRectRect(*trackerBB, *detectorBB) < 0.5) // alg 4 line 4
+        if(numClusters == 1 && confDetector > confTracker && tldOverlapRectRect(*trackerBB, *detectorBB) < 0.5) // alg 4 line 4, one detection and conf bigger than track (wrong track), re-init
         {
 
             currBB = tldCopyRect(detectorBB); // line 5 reinitialisation
@@ -219,7 +219,7 @@ void TLD::fuseHypotheses()
             }
         }
     }
-    else if(numClusters == 1)
+    else if(numClusters == 1) // object disappears, appears and then found by detector
     {
         if(currBB)
         {

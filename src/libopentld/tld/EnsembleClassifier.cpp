@@ -150,26 +150,26 @@ void EnsembleClassifier::nextIteration(const Mat &img)
 }
 
 //Classical fern algorithm
-int EnsembleClassifier::calcFernFeature(int windowIdx, int treeIdx)
+int EnsembleClassifier::calcFernFeature(int windowIdx, int treeIdx) // alg 2
 {
 
     int index = 0;
-    int *bbox = windowOffsets + windowIdx * TLD_WINDOW_OFFSET_SIZE;
-    int *off = featureOffsets + bbox[4] + treeIdx * 2 * numFeatures; //bbox[4] is pointer to features for the current scale
+    int *bbox = windowOffsets + windowIdx * TLD_WINDOW_OFFSET_SIZE; // offset size = 6
+    int *off = featureOffsets + bbox[4] + treeIdx * 2 * numFeatures; //bbox[4] is pointer to features for the current scale //featureOffsets is calculated by initFeatureOffsets()
 
     for(int i = 0; i < numFeatures; i++)
     {
-        index <<= 1;
+        index <<= 1; // index = index<< 1  equilavent index * 2
 
         int fp0 = img[bbox[0] + off[0]];
         int fp1 = img[bbox[0] + off[1]];
 
-        if(fp0 > fp1)
+        if(fp0 > fp1) //compare pixel value
         {
             index |= 1;
         }
 
-        off += 2;
+        off += 2; //pointer to next feature
     }
 
     return index;
@@ -197,10 +197,10 @@ float EnsembleClassifier::calcConfidence(int *featureVector)
 
 void EnsembleClassifier::classifyWindow(int windowIdx)
 {
-    int *featureVector = detectionResult->featureVectors + numTrees * windowIdx;
-    calcFeatureVector(windowIdx, featureVector);
+    int *featureVector = detectionResult->featureVectors + numTrees * windowIdx; //numTrees = 10
+    calcFeatureVector(windowIdx, featureVector); // Fern Feature Calculation
 
-    detectionResult->posteriors[windowIdx] = calcConfidence(featureVector);
+    detectionResult->posteriors[windowIdx] = calcConfidence(featureVector); // confidence calculation
 }
 
 bool EnsembleClassifier::filter(int i)

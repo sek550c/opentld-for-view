@@ -100,7 +100,7 @@ float NNClassifier::classifyPatch(NormalizedPatch *patch)
 
         if(ccorr > ccorr_max_p)
         {
-            ccorr_max_p = ccorr;
+            ccorr_max_p = ccorr; //nearest d+ eq 3.18
         }
     }
 
@@ -113,14 +113,14 @@ float NNClassifier::classifyPatch(NormalizedPatch *patch)
 
         if(ccorr > ccorr_max_n)
         {
-            ccorr_max_n = ccorr;
+            ccorr_max_n = ccorr; //nearest d- eq 3.19
         }
     }
 
     float dN = 1 - ccorr_max_n;
     float dP = 1 - ccorr_max_p;
 
-    float distance = dN / (dN + dP);
+    float distance = dN / (dN + dP); //eq 3.20
     return distance;
 }
 
@@ -147,9 +147,9 @@ bool NNClassifier::filter(const Mat &img, int windowIdx)
 {
     if(!enabled) return true;
 
-    float conf = classifyWindow(img, windowIdx);
+    float conf = classifyWindow(img, windowIdx); // distance in eq 3.20
 
-    if(conf < thetaTP)
+    if(conf < thetaTP) // 0.65
     {
         return false;
     }

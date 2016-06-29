@@ -280,13 +280,13 @@ void DetectorCascade::detect(const Mat &img)
     }
 
     //Prepare components
-    foregroundDetector->nextIteration(img); //Calculates foreground // get bbox vector
+    foregroundDetector->nextIteration(img); //Calculates foreground // get blob bbox vector
     varianceFilter->nextIteration(img); //Calculates integral images
     ensembleClassifier->nextIteration(img);
 
     #pragma omp parallel for
 
-    for(int i = 0; i < numWindows; i++)
+    for(int i = 0; i < numWindows; i++) //traverse all sliding windows
     {
 
         int *window = &windows[TLD_WINDOW_SIZE * i];
@@ -295,13 +295,13 @@ void DetectorCascade::detect(const Mat &img)
         {
             bool isInside = false;
 
-            for(size_t j = 0; j < detectionResult->fgList->size(); j++) // fgList: bounding box vector
+            for(size_t j = 0; j < detectionResult->fgList->size(); j++) // fgList: blob bounding box vector
             {
 
                 int bgBox[4];
                 tldRectToArray(detectionResult->fgList->at(j), bgBox);
 
-                if(tldIsInside(window, bgBox))  //TODO: This is inefficient and should be replaced by a quadtree
+                if(tldIsInside(window, bgBox))  //TODO: This is inefficient and should be replaced by a quadtree //window inside bgBox ?
                 {
                     isInside = true;
                 }
