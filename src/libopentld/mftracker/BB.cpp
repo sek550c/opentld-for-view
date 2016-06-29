@@ -121,7 +121,7 @@ int getFilledBBPoints(float *bb, int numM, int numN, int margin, float *pts)
     }
 
     //calculate step width
-    spaceN = (bb_local[2] - bb_local[0]) / divN;
+    spaceN = (bb_local[2] - bb_local[0]) / divN; //(x2-x1)/9  distance between 2 points
     spaceM = (bb_local[3] - bb_local[1]) / divM;
 
     //calculate points and save them to the array
@@ -129,8 +129,8 @@ int getFilledBBPoints(float *bb, int numM, int numN, int margin, float *pts)
     {
         for(j = 0; j < numM; j++)
         {
-            pts[i * numM * pointDim + j * pointDim + 0] = bb_local[0] + i * spaceN;
-            pts[i * numM * pointDim + j * pointDim + 1] = bb_local[1] + j * spaceM;
+            pts[i * numM * pointDim + j * pointDim + 0] = bb_local[0] + i * spaceN; //pts[0 2 4 ...] = x start point +  i * dis
+            pts[i * numM * pointDim + j * pointDim + 1] = bb_local[1] + j * spaceM;//pts[1 3 5 ...] = y start point +  j * dis  (pts[0], pts[1]) is a point 
         }
     }
 

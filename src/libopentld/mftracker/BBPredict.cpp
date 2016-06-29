@@ -68,11 +68,11 @@ int predictbb(float *bb0, CvPoint2D32f *pt0, CvPoint2D32f *pt1, int nPts,
 
     for(i = 0; i < nPts; i++)
     {
-        ofx[i] = pt1[i].x - pt0[i].x;
-        ofy[i] = pt1[i].y - pt0[i].y;
+        ofx[i] = pt1[i].x - pt0[i].x; // offset/displacement x' -x 
+        ofy[i] = pt1[i].y - pt0[i].y; // offset/displacement y' -y
     }
 
-    dx = getMedianUnmanaged(ofx, nPts);
+    dx = getMedianUnmanaged(ofx, nPts); // return median of the array
     dy = getMedianUnmanaged(ofy, nPts);
     free(ofx);
     ofx = 0;
@@ -88,16 +88,16 @@ int predictbb(float *bb0, CvPoint2D32f *pt0, CvPoint2D32f *pt1, int nPts,
         for(j = i + 1; j < nPts; j++, d++)
         {
             dist0[d]
-            = sqrt(pow(pt0[i].x - pt0[j].x, 2) + pow(pt0[i].y - pt0[j].y, 2));
+            = sqrt(pow(pt0[i].x - pt0[j].x, 2) + pow(pt0[i].y - pt0[j].y, 2)); // 2 points distance in start
             dist1[d]
-            = sqrt(pow(pt1[i].x - pt1[j].x, 2) + pow(pt1[i].y - pt1[j].y, 2));
-            dist0[d] = dist1[d] / dist0[d];
+            = sqrt(pow(pt1[i].x - pt1[j].x, 2) + pow(pt1[i].y - pt1[j].y, 2)); // 2 points distance in target
+            dist0[d] = dist1[d] / dist0[d]; // scale 
         }
     }
 
     //The scale change is the median of all changes of distance.
     //same as s = median(d2./d1) with above
-    *shift = getMedianUnmanaged(dist0, lenPdist);
+    *shift = getMedianUnmanaged(dist0, lenPdist); // median of scale of new bbox
     free(dist0);
     dist0 = 0;
     free(dist1);
@@ -106,7 +106,7 @@ int predictbb(float *bb0, CvPoint2D32f *pt0, CvPoint2D32f *pt1, int nPts,
     s1 = 0.5 * (*shift - 1) * getBbHeight(bb0);
 
     //Apply transformations (translation& scale) to old Bounding Box
-    bb1[0] = bb0[0] - s0 + dx;
+    bb1[0] = bb0[0] - s0 + dx; // x' = x - (w - scale * w)*0.5 + displacement
     bb1[1] = bb0[1] - s1 + dy;
     bb1[2] = bb0[2] + s0 + dx;
     bb1[3] = bb0[3] + s1 + dy;

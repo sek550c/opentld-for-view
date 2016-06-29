@@ -179,10 +179,10 @@ int trackLK(IplImage *imgI, IplImage *imgJ, float ptsI[], int nPtsI,
 
     I = 0;
     J = 1;
-    winsize_ncc = 10;
+    winsize_ncc = 10; // similarity check window size
 
     //NOTE: initImgs() must be used correctly or memleak will follow.
-    pyr_sz = cvSize(imgI->width + 8, imgI->height / 3);
+    pyr_sz = cvSize(imgI->width + 8, imgI->height / 3); //Pyramid size
     PYR[I] = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
     PYR[J] = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
 
@@ -201,12 +201,12 @@ int trackLK(IplImage *imgI, IplImage *imgJ, float ptsI[], int nPtsI,
 
     for(i = 0; i < nPtsI; i++)
     {
-        points[0][i].x = ptsI[2 * i];
-        points[0][i].y = ptsI[2 * i + 1];
-        points[1][i].x = ptsJ[2 * i];
-        points[1][i].y = ptsJ[2 * i + 1];
-        points[2][i].x = ptsI[2 * i];
-        points[2][i].y = ptsI[2 * i + 1];
+        points[0][i].x = ptsI[2 * i];		//i-th point x in template 
+        points[0][i].y = ptsI[2 * i + 1];	//i-th point y in template
+        points[1][i].x = ptsJ[2 * i];		//i-th point x in target
+        points[1][i].y = ptsJ[2 * i + 1];	//i-th point y in target
+        points[2][i].x = ptsI[2 * i];		//i-th point x in forward-backward
+        points[2][i].y = ptsI[2 * i + 1];	//i-th point y in forward-backward
     }
 
     //lucas kanade track
@@ -225,22 +225,22 @@ int trackLK(IplImage *imgI, IplImage *imgJ, float ptsI[], int nPtsI,
     {
         if(status[i] && statusBacktrack[i])
         {
-            status[i] = 1;
+            status[i] = 1; 
         }
         else
         {
             status[i] = 0;
         }
     }
-    //cross correlation
+    //cross correlation //similarity of 2 patches
     normCrossCorrelation(imgI, imgJ, points[0], points[1], nPtsI, status, ncc,
                          winsize_ncc, CV_TM_CCOEFF_NORMED);
-    //euclidean distance
+    //euclidean distance //Euclidean distance
     euclideanDistance(points[0], points[2], fb, nPtsI);
 
     for(i = 0; i < nPtsI; i++)
     {
-        if(status[i] == 1) // pos track
+        if(status[i] == 1) // pos track //successful tracked points remains
         {
             ptsJ[2 * i] = points[1][i].x;
             ptsJ[2 * i + 1] = points[1][i].y;

@@ -154,7 +154,7 @@ void TLD::processImage(const Mat &img)
 
     if(trackerEnabled)
     {
-        medianFlowTracker->track(prevImg, currImg, prevBB); // return trackerBB
+        medianFlowTracker->track(prevImg, currImg, prevBB); // return new bbox trackerBB
     }
 
     if(detectorEnabled && (!alternating || medianFlowTracker->trackerBB == NULL))

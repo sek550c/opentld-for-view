@@ -67,15 +67,15 @@ int fbtrack(IplImage *imgI, IplImage *imgJ, float *bb, float *bbnew,
     float medFb;
     float medNcc;
     int nAfterFbUsage;
-    getFilledBBPoints(bb, numM, numN, 5, pt);
+    getFilledBBPoints(bb, numM, numN, 5, pt); //costruct equally spaced set of points in the bbox, pt contains points
     //getFilledBBPoints(bb, numM, numN, 5, &ptTracked);
     memcpy(ptTracked, pt, sizeof(float) * sizePointsArray);
 
     initImgs();
-    trackLK(imgI, imgJ, pt, nPoints, ptTracked, nPoints, level, fb, ncc, status);
+    trackLK(imgI, imgJ, pt, nPoints, ptTracked, nPoints, level, fb, ncc, status); // return remained points, ncc and e-dis
     initImgs();
     //  char* status = *statusP;
-    nlkPoints = 0;
+    nlkPoints = 0; //num of points sucessfully tracked by LK
 
     for(i = 0; i < nPoints; i++)
     {
@@ -90,7 +90,7 @@ int fbtrack(IplImage *imgI, IplImage *imgJ, float *bb, float *bbnew,
     M = 2;
     nRealPoints = 0;
 
-    for(i = 0; i < nPoints; i++)
+    for(i = 0; i < nPoints; i++) // nPoints = 100 in this case
     {
         //TODO:handle Missing Points
         //or status[i]==0
@@ -110,15 +110,15 @@ int fbtrack(IplImage *imgI, IplImage *imgJ, float *bb, float *bbnew,
     }
 
     //assert nRealPoints==nlkPoints
-    medFb = getMedian(fbLkCleaned, nlkPoints);
-    medNcc = getMedian(nccLkCleaned, nlkPoints);
+    medFb = getMedian(fbLkCleaned, nlkPoints);		// cal median of e-dis
+    medNcc = getMedian(nccLkCleaned, nlkPoints);	// cal median of ncc
     /*  printf("medianfb: %f\nmedianncc: %f\n", medFb, medNcc);
      printf("Number of points after lk: %d\n", nlkPoints);*/
     nAfterFbUsage = 0;
 
     for(i = 0; i < nlkPoints; i++)
     {
-        if((fbLkCleaned[i] <= medFb) & (nccLkCleaned[i] >= medNcc))
+        if((fbLkCleaned[i] <= medFb) & (nccLkCleaned[i] >= medNcc)) // filtering points
         {
             startPoints[nAfterFbUsage] = startPoints[i];
             targetPoints[nAfterFbUsage] = targetPoints[i];
@@ -133,7 +133,7 @@ int fbtrack(IplImage *imgI, IplImage *imgJ, float *bb, float *bbnew,
     //      nRealPoints);
     //  showIplImage(imgI);
 
-    predictbb(bb, startPoints, targetPoints, nAfterFbUsage, bbnew, scaleshift); //calculate new bounding box
+    predictbb(bb, startPoints, targetPoints, nAfterFbUsage, bbnew, scaleshift); //apply sclae and displacement to calculate new bounding box
     /*printf("bbnew: %f,%f,%f,%f\n", bbnew[0], bbnew[1], bbnew[2], bbnew[3]);
      printf("relative scale: %f \n", scaleshift[0]);*/
     //show picture with tracked bb

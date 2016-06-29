@@ -66,7 +66,7 @@ void MedianFlowTracker::track(const Mat &prevMat, const Mat &currMat, Rect *prev
         IplImage prevImg = prevMat;
         IplImage currImg = currMat;
 
-        int success = fbtrack(&prevImg, &currImg, bb_tracker, bb_tracker, &scale);
+        int success = fbtrack(&prevImg, &currImg, bb_tracker, bb_tracker, &scale); //bb_tracker is new bbox format: x1, y1, x2, y2
 
         //Extract subimage
         float x, y, w, h;
