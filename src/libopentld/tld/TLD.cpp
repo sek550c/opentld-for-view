@@ -360,14 +360,14 @@ void TLD::learn()
 
         if(overlap[i] > 0.6)
         {
-            positiveIndices.push_back(pair<int, float>(i, overlap[i])); // overlap > 0.6
+            positiveIndices.push_back(pair<int, float>(i, overlap[i])); // overlap > 0.6, detection match result(currBB)
         }
 
         if(overlap[i] < 0.2)
         {
             if(!detectorCascade->ensembleClassifier->enabled || detectionResult->posteriors[i] > 0.5)   //Should be 0.5 according to the paper
             {
-                negativeIndices.push_back(i); // overlap < 0.2
+                negativeIndices.push_back(i); // detection overlap < 0.2, detection mismatch result(currBB)
             }
 
             if(!detectorCascade->ensembleClassifier->enabled || detectionResult->posteriors[i] > 0.5)

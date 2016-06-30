@@ -169,12 +169,12 @@ void NNClassifier::learn(vector<NormalizedPatch> patches)
 
         if(patch.positive && conf <= thetaTP)
         {
-            truePositives->push_back(patch);
+            truePositives->push_back(patch); //alg 5 line 18
         }
 
         if(!patch.positive && conf >= thetaFP)
         {
-            falsePositives->push_back(patch);
+            falsePositives->push_back(patch); //alg 5 line 13
         }
     }
 
